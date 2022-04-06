@@ -33,14 +33,6 @@ public class Code {
 
         a1.stream().flatMap(i -> a2.stream().map(j -> new int[]{i, j})).filter(item -> (item[0] + item[1]) % 3 == 0).forEach(ints -> System.out.printf("(%d,%d) ", ints[0], ints[1]));
 
-//        int count = 0;
-//        for (int k : a1)
-//            for (int i : a2)
-//                a3[count++] = new int[]{k, i};
-//
-//        for (int[] ints : a3)
-//            System.out.printf("(%d,%d) ", ints[0], ints[1]);
-
     }
 
 }
