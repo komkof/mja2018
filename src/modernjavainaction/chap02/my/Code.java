@@ -1,14 +1,9 @@
 package modernjavainaction.chap02.my;
 
-import modernjavainaction.chap04.Dish;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Code {
