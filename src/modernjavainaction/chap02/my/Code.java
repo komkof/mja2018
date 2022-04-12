@@ -1,39 +1,111 @@
 package modernjavainaction.chap02.my;
 
-import modernjavainaction.chap04.Dish;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 public class Code {
 
-
     public static void main(String[] args) {
-        var list = Stream.of("Hello", "World")
-                .map(word -> word.split(""))
-                .flatMap(Arrays::stream)
-                .distinct()
-                .collect(toList());
-        System.out.print(list);
-        Stream.of(1, 2, 3, 4, 5).map(integer -> integer * integer).forEach(System.out::println);
-
-        var a1 = List.of(1, 2, 3);
-        var a2 = List.of(3, 4);
-        var a3 = new int[6][2];
-
-        Stream.of(new Integer[]{1, 2, 3}, new Integer[]{3, 4})
-                .flatMap(Arrays::stream)
+        Trader raoul = new Trader("Raoul", "Cambridge");
+        Trader mario = new Trader("Mario", "Milan");
+        Trader alan = new Trader("Alan", "Cambridge");
+        Trader brian = new Trader("Brian", "Cambridge");
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction(brian, 2011, 300),
+                new Transaction(raoul, 2012, 1000),
+                new Transaction(raoul, 2011, 400),
+                new Transaction(mario, 2012, 710),
+                new Transaction(mario, 2012, 700),
+                new Transaction(alan, 2012, 950)
+        );
+        transactions.stream()
+                .filter(t -> t.getYear() == 2011)
+                .sorted(Comparator.comparing(Transaction::getValue))
                 .forEach(System.out::println);
+        transactions.stream()
+                .map(t -> t.getTrader().getCity())
+                .distinct()
+                .forEach(System.out::println);
+        transactions.stream()
+                .filter(t -> t.getTrader().getCity().equals("Cambridge"))
+                .map(t -> t.getTrader().getName())
+                .distinct()
+                .sorted()
+                .forEach(System.out::println);
+        System.out.println(transactions.stream()
+                .filter(t -> t.getTrader().getCity().equals("Cambridge"))
+                .map(t -> t.getTrader().getName())
+                .distinct()
+                .sorted()
+                .reduce("", (a, b) -> String.format("%s %s", a, b)));
+        transactions.stream()
+                .filter(t -> t.getTrader().getCity().equals("Milan"))
+                .findAny()
+                .ifPresentOrElse(
+                        transaction -> System.out.println(transaction.getTrader()),
+                        () -> System.out.println("Value is empty"));
+        transactions.stream().
+                filter(t -> t.getTrader().getCity().equals("Cambridge"))
+                .map(Transaction::getValue)
+                .forEach(System.out::println);
+        System.out.println(transactions.stream().max(Comparator.comparingInt(Transaction::getValue))
+                .get().getValue());
+        transactions.stream().min(Comparator.comparingInt(Transaction::getValue))
+                .ifPresent(System.out::println);
+    }
+}
 
-        a1.stream().flatMap(i -> a2.stream().map(j -> new int[]{i, j})).filter(item -> (item[0] + item[1]) % 3 == 0).forEach(ints -> System.out.printf("(%d,%d) ", ints[0], ints[1]));
+class Trader {
+    private final String name;
+    private final String city;
 
+    public Trader(String n, String c) {
+        this.name = n;
+        this.city = c;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public String toString() {
+        return "Trader:" + this.name + " in " + this.city;
+    }
+}
+
+class Transaction {
+    private final Trader trader;
+    private final int year;
+    private final int value;
+
+    public Transaction(Trader trader, int year, int value) {
+        this.trader = trader;
+        this.year = year;
+        this.value = value;
+    }
+
+    public Trader getTrader() {
+        return this.trader;
+    }
+
+    public int getYear() {
+        return this.year;
+    }
+
+    public int getValue() {
+        return this.value;
+    }
+
+    public String toString() {
+        return "{" + this.trader + ", " +
+                "year: " + this.year + ", " +
+                "value:" + this.value + "}";
     }
 
 }
-
